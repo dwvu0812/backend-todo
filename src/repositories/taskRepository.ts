@@ -1,8 +1,8 @@
-import { CreateTaskDTO, ITask, TaskStatus, UpdateTaskDTO } from '~/interfaces'
+import { CreateTaskDTO, ITask, ITaskRepository, TaskStatus, UpdateTaskDTO } from '~/interfaces'
 import prisma from '~/lib/prisma'
 
-class TaskRepository {
-  async createTask(task: CreateTaskDTO): Promise<ITask> {
+class TaskRepository implements ITaskRepository {
+  async create(task: CreateTaskDTO): Promise<ITask> {
     // @ts-ignore
     return prisma.task.create({
       data: {
@@ -12,14 +12,14 @@ class TaskRepository {
     })
   }
 
-  async findTaskById(id: string): Promise<ITask | null> {
+  async findById(id: string): Promise<ITask | null> {
     // @ts-ignore
     return prisma.task.findUnique({
       where: { id }
     })
   }
 
-  async updateTask(id: string, task: UpdateTaskDTO): Promise<ITask> {
+  async update(id: string, task: UpdateTaskDTO): Promise<ITask> {
     // @ts-ignore
     return prisma.task.update({
       where: { id },
@@ -27,7 +27,7 @@ class TaskRepository {
     })
   }
 
-  async deleteTask(id: string): Promise<ITask> {
+  async delete(id: string): Promise<ITask> {
     // @ts-ignore
     return prisma.task.delete({
       where: { id }
