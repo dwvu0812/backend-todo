@@ -1,8 +1,14 @@
-import express, { Express, Request, Response, NextFunction } from 'express'
 import bodyParser from 'body-parser'
 import cors from 'cors'
-import todoRoutes from './routes/todoRoutes'
+import express, { Express, Request, Response } from 'express'
 import { errorHandler } from './middleware/errorHandler'
+import taskRepository from './repositories/taskRepository'
+import userRepository from './repositories/userRepository'
+import { TaskService, UserService } from './services'
+import TaskController from './controllers/taskController'
+import { UserController } from './controllers'
+import { createAuthMiddleware } from './middleware/authMiddleware'
+import { createTaskRoute, createUserRoute } from './routes'
 
 const app: Express = express()
 const port = process.env.PORT || 3000
@@ -12,13 +18,17 @@ app.use(cors())
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 
-// Routes
-app.use('/api/todos', todoRoutes)
+// Dependencies
+const taskService = new TaskService(taskRepository)
+const userService = new UserService(userRepository)
+const taskController = new TaskController(taskService)
+const userController = new UserController(userService)
 
+// auth middleware
+const authMiddleware = createAuthMiddleware(userService)
 // Base route
-app.get('/', (req: Request, res: Response) => {
-  res.send('Todo API is running')
-})
+app.use('/api/users', createUserRoute(userController, authMiddleware))
+app.use('/api/tasks', createTaskRoute(taskController, authMiddleware))
 
 // Error handling middleware
 app.use(errorHandler)

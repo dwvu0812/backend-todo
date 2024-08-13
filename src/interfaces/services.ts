@@ -11,6 +11,7 @@ export interface ITaskService {
 
 export interface IUserService {
   createUser(data: CreateUserDTO): Promise<IUser>
+  validateUser(email: string, password: string): Promise<IUser>
   getUserById(id: string): Promise<IUser | null>
   getUserByEmail(email: string): Promise<IUser | null>
   updateUser(id: string, data: UpdateUserDTO): Promise<IUser>

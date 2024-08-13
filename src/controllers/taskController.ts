@@ -1,47 +1,60 @@
 import { Request, Response } from 'express'
-import { CreateTaskDTO, UpdateTaskDTO } from '~/interfaces'
-import taskRepository from '~/repositories/taskRepository'
-import { TaskService } from '~/services'
-
-const taskService = new TaskService(taskRepository)
+import { ITaskService, UpdateTaskDTO } from '~/interfaces'
 
 class TaskController {
-  constructor(private taskService: TaskService) {}
+  constructor(private taskService: ITaskService) {}
 
   async createTask(req: Request, res: Response) {
-    const data: CreateTaskDTO = req.body
-    const task = await this.taskService.createTask(data)
-    res.json(task)
+    const task = await this.taskService.createTask({
+      ...req.body,
+      // @ts-ignore
+      userId: req.user.id
+    })
+    res.status(201).json(task)
   }
 
-  async getTask(req: Request, res: Response) {
-    const id = req.params.id
-    const task = await this.taskService.findTaskById(id)
-    res.json(task)
+  getTask = async (req: Request, res: Response) => {
+    try {
+      const task = await this.taskService.getTaskById(req.params.id)
+      res.status(200).json(task)
+    } catch (error) {
+      // @ts-ignore
+      res.status(400).json({ message: error.message })
+    }
   }
 
-  async updateTask(req: Request, res: Response) {
-    const id = req.params.id
-    const data: UpdateTaskDTO = req.body
-    const task = await this.taskService.updateTask(id, data)
-    res.json(task)
+  updateTask = async (req: Request, res: Response) => {
+    try {
+      const task = await this.taskService.updateTask(req.params.id, req.body as UpdateTaskDTO)
+      res.status(200).json(task)
+    } catch (error) {
+      // @ts-ignore
+      res.status(400).json({ message: error.message })
+    }
   }
 
-  async deleteTask(req: Request, res: Response) {
-    const id = req.params.id
-    const task = await this.taskService.deleteTask(id)
-    res.json(task)
+  deleteTask = async (req: Request, res: Response) => {
+    try {
+      const task = await this.taskService.deleteTask(req.params.id)
+      res.status(200).json(task)
+    } catch (error) {
+      // @ts-ignore
+      res.status(400).json({ message: error.message })
+    }
   }
 
-  async getTasks(req: Request, res: Response) {
-    const userId = req.user.id
-    const page = Number(req.query.page) || 1
-    const pageSize = Number(req.query.pageSize) || 10
-    const { tasks, total } = await this.taskService.getTasks(userId, page, pageSize)
-    res.json({ tasks, total })
+  getTasks = async (req: Request, res: Response) => {
+    try {
+      const page = parseInt(req.query.page as string) || 1
+      const pageSize = parseInt(req.query.pageSize as string) || 10
+      // @ts-ignore
+      const { tasks, total } = await this.taskService.getTasks(req.user.id, page, pageSize)
+      res.status(200).json({ tasks, total, page, pageSize })
+    } catch (error) {
+      // @ts-ignore
+      res.status(400).json({ message: error.message })
+    }
   }
 }
 
-const taskController = new TaskController(taskService)
-
-export default taskController
+export default TaskController
