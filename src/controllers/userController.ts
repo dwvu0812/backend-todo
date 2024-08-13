@@ -1,14 +1,15 @@
-import { CreateUserDTO, IUserService, UpdateUserDTO } from '~/interfaces'
+import { IUserService } from '~/interfaces'
 import { generateToken } from '~/utils/jwt'
 import { Request, Response } from 'express'
+import { CreateUserDto, LoginUserDto } from '~/dtos/user.dto'
 
 export class UserController {
   constructor(private userService: IUserService) {}
 
   register = async (req: Request, res: Response) => {
-    console.log('register', req)
+    const userData: CreateUserDto = req.body
     try {
-      const user = await this.userService.createUser(req.body as unknown as CreateUserDTO)
+      const user = await this.userService.createUser(userData)
       const token = generateToken(user)
       res.status(201).json({ user, token })
     } catch (error) {
@@ -19,7 +20,7 @@ export class UserController {
 
   login = async (req: Request, res: Response) => {
     try {
-      const { email, password } = req.body
+      const { email, password }: LoginUserDto = req.body
       const user = await this.userService.validateUser(email, password)
       const token = generateToken(user)
       res.status(200).json({ user, token })
@@ -43,9 +44,10 @@ export class UserController {
 
   updateProfile = async (req: Request, res: Response) => {
     try {
+      const userData: CreateUserDto = req.body
       // @ts-ignore
       const userId = req.user.id
-      const user = await this.userService.updateUser(userId, req.body as UpdateUserDTO)
+      const user = await this.userService.updateUser(userId, userData)
       res.status(200).json(user)
     } catch (error) {
       // @ts-ignore

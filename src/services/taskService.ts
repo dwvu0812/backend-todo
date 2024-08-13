@@ -1,9 +1,10 @@
-import { CreateTaskDTO, ITask, ITaskRepository, ITaskService, TaskStatus, UpdateTaskDTO } from '~/interfaces'
+import { CreateTaskDto, UpdateTaskDto } from '~/dtos/task.dto'
+import { ITask, ITaskRepository, ITaskService, TaskStatus } from '~/interfaces'
 
 export class TaskService implements ITaskService {
   constructor(private taskRepository: ITaskRepository) {}
 
-  async createTask(data: CreateTaskDTO): Promise<ITask> {
+  async createTask(data: CreateTaskDto): Promise<ITask> {
     if (!data.title) {
       throw new Error('Title is required')
     }
@@ -23,7 +24,7 @@ export class TaskService implements ITaskService {
     return task
   }
 
-  async updateTask(id: string, data: UpdateTaskDTO): Promise<ITask> {
+  async updateTask(id: string, data: UpdateTaskDto): Promise<ITask> {
     const existingTask = await this.taskRepository.findById(id)
 
     if (!existingTask) {

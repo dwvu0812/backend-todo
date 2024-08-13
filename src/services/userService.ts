@@ -1,9 +1,10 @@
-import { CreateUserDTO, IUser, IUserRepository, IUserService } from '~/interfaces'
+import { IUser, IUserRepository, IUserService } from '~/interfaces'
 import bcrypt from 'bcrypt'
+import { CreateUserDto, UpdateUserDto } from '~/dtos/user.dto'
 
 export class UserService implements IUserService {
   constructor(private userRepository: IUserRepository) {}
-  async createUser(data: CreateUserDTO): Promise<IUser> {
+  async createUser(data: CreateUserDto): Promise<IUser> {
     if (!data.email || !data.password) {
       throw new Error('Email and password are required')
     }
@@ -50,7 +51,7 @@ export class UserService implements IUserService {
     }
     return this.userRepository.findByEmail(email)
   }
-  async updateUser(id: string, data: CreateUserDTO): Promise<IUser> {
+  async updateUser(id: string, data: UpdateUserDto): Promise<IUser> {
     const user = await this.userRepository.findById(id)
     if (!user) {
       throw new Error('User not found')

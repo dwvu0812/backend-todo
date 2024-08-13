@@ -6,10 +6,6 @@ export interface IUser {
   createdAt: Date
   updatedAt: Date
 }
-
-export type CreateUserDTO = Omit<IUser, 'id' | 'createdAt' | 'updatedAt'>
-export type UpdateUserDTO = Partial<Omit<IUser, 'id' | 'createdAt' | 'updatedAt'>>
-
 export interface UserListResponse {
   users: IUser[]
   total: number

@@ -1,16 +1,23 @@
 import { Request, Response } from 'express'
-import { ITaskService, UpdateTaskDTO } from '~/interfaces'
+import { CreateTaskDto, UpdateTaskDto } from '~/dtos/task.dto'
+import { ITaskService } from '~/interfaces'
 
 class TaskController {
   constructor(private taskService: ITaskService) {}
 
   async createTask(req: Request, res: Response) {
-    const task = await this.taskService.createTask({
-      ...req.body,
+    try {
+      const data: CreateTaskDto = req.body
+      const task = await this.taskService.createTask({
+        ...data,
+        // @ts-ignore
+        userId: req.user.id
+      })
+      res.status(201).json(task)
+    } catch (error) {
       // @ts-ignore
-      userId: req.user.id
-    })
-    res.status(201).json(task)
+      res.status(400).json({ message: error.message })
+    }
   }
 
   getTask = async (req: Request, res: Response) => {
@@ -25,7 +32,8 @@ class TaskController {
 
   updateTask = async (req: Request, res: Response) => {
     try {
-      const task = await this.taskService.updateTask(req.params.id, req.body as UpdateTaskDTO)
+      const data: UpdateTaskDto = req.body
+      const task = await this.taskService.updateTask(req.params.id, data)
       res.status(200).json(task)
     } catch (error) {
       // @ts-ignore

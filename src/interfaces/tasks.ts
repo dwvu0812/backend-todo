@@ -15,9 +15,6 @@ export interface ITask {
   userId: string
 }
 
-export type CreateTaskDTO = Omit<ITask, 'id' | 'createdAt' | 'updatedAt'>
-export type UpdateTaskDTO = Partial<Omit<ITask, 'id' | 'createdAt' | 'updatedAt'>>
-
 export interface TaskListResponse {
   task: ITask[]
   total: number

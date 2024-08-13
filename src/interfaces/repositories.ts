@@ -1,10 +1,12 @@
-import { CreateTaskDTO, ITask, UpdateTaskDTO } from './tasks'
-import { CreateUserDTO, IUser, UpdateUserDTO } from './user'
+import { CreateTaskDto, UpdateTaskDto } from '~/dtos/task.dto'
+import { ITask } from './tasks'
+import { IUser } from './user'
+import { CreateUserDto, UpdateUserDto } from '~/dtos/user.dto'
 
 export interface ITaskRepository {
-  create(data: CreateTaskDTO): Promise<ITask>
+  create(data: CreateTaskDto): Promise<ITask>
   findById(id: string): Promise<ITask | null>
-  update(id: string, data: UpdateTaskDTO): Promise<ITask>
+  update(id: string, data: UpdateTaskDto): Promise<ITask>
   delete: (id: string) => Promise<ITask>
   findAll: (
     userId: string,
@@ -19,8 +21,8 @@ export interface ITaskRepository {
 export interface IUserRepository {
   findById: (id: string) => Promise<IUser | null>
   findByEmail: (email: string) => Promise<IUser | null>
-  create: (data: CreateUserDTO) => Promise<IUser>
-  update: (id: string, data: UpdateUserDTO) => Promise<IUser>
+  create: (data: CreateUserDto) => Promise<IUser>
+  update: (id: string, data: UpdateUserDto) => Promise<IUser>
   delete: (id: string) => Promise<IUser>
   findAll: (
     limit: number,
