@@ -1,5 +1,5 @@
 import { IsDateString, IsEnum, IsOptional, IsString, MinLength } from 'class-validator'
-import { TaskStatus } from '~/interfaces'
+import { IUser, TaskStatus } from '~/interfaces'
 
 export class CreateTaskDto {
   @IsString()
@@ -16,6 +16,8 @@ export class CreateTaskDto {
   @IsOptional()
   @IsDateString()
   dueDate?: Date
+
+  user: IUser
 }
 
 export class UpdateTaskDto {

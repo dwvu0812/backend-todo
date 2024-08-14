@@ -1,9 +1,10 @@
+import { CreateUserDto, UpdateUserDto } from '~/dtos/user.dto'
 import { IUserRepository } from '~/interfaces'
-import { CreateUserDTO, IUser, UpdateUserDTO } from '~/interfaces/user'
+import { IUser } from '~/interfaces/user'
 import prisma from '~/lib/prisma'
 
 class UserRepository implements IUserRepository {
-  async create(data: CreateUserDTO): Promise<IUser> {
+  async create(data: CreateUserDto): Promise<IUser> {
     return prisma.user.create({
       data
     })
@@ -23,7 +24,7 @@ class UserRepository implements IUserRepository {
     })
   }
 
-  async update(id: string, data: UpdateUserDTO): Promise<IUser> {
+  async update(id: string, data: UpdateUserDto): Promise<IUser> {
     return prisma.user.update({
       where: { id },
       data

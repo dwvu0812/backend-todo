@@ -9,6 +9,8 @@ import TaskController from './controllers/taskController'
 import { UserController } from './controllers'
 import { createAuthMiddleware } from './middleware/authMiddleware'
 import { createTaskRoute, createUserRoute } from './routes'
+import swaggerUi from 'swagger-ui-express'
+import { swaggerSpec } from './config/swagger'
 
 const app: Express = express()
 const port = process.env.PORT || 3000
@@ -41,5 +43,7 @@ app.use((req: Request, res: Response) => {
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`)
 })
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 
 export default app
